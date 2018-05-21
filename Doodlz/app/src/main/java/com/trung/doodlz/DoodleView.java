@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
+//thuan test
 // custom View for drawing
 public class DoodleView extends View {
 

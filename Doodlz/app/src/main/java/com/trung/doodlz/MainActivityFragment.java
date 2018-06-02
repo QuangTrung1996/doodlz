@@ -16,7 +16,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -201,10 +204,6 @@ public class MainActivityFragment extends Fragment {
                 saveImage(); // check permission and save current image
                 doodleView.setEraser(false);
                 return true; // consume the menu event
-            case R.id.print:
-                doodleView.printImage(); // print the current images
-                doodleView.setEraser(false);
-                return true; // consume the menu event
         }
 
         return super.onOptionsItemSelected(item);
@@ -251,6 +250,25 @@ public class MainActivityFragment extends Fragment {
 
         Intent customChooserIntent = Intent.createChooser(i, "Pick an image");
         startActivityForResult(customChooserIntent, 10);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                Log.d("AAA", String.valueOf(bitmap));
+
+//                ImageView imageView = (ImageView) findViewById(R.id.imageView);
+//                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // requests for the permission needed for saving the image if

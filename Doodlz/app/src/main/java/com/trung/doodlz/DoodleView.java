@@ -39,7 +39,7 @@ public class DoodleView extends View {
     private int paintColor = 0xff000000;
     private int previousColor = paintColor;
 
-    // danh sach cac duong da dc ve va cac duong da xoa
+    // danh sach cac duong da dc ve va cac duong da undo
     private ArrayList<CustomPath> paths = new ArrayList<>();
     private ArrayList<CustomPath> undonePaths = new ArrayList<>();
 

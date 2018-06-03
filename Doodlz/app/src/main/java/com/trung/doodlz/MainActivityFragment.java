@@ -9,31 +9,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import static android.app.Activity.RESULT_OK;
 
 public class MainActivityFragment extends Fragment {
 
@@ -56,11 +47,9 @@ public class MainActivityFragment extends Fragment {
 
     // called when Fragment's view needs to be created
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view =
-                inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         setHasOptionsMenu(true); // this fragment has menu items to display
 
@@ -119,8 +108,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     // xử lý sự kiện cho các sự kiện gia tốc
-    private final SensorEventListener sensorEventListener =
-            new SensorEventListener() {
+    private final SensorEventListener sensorEventListener = new SensorEventListener() {
                 // sử dụng gia tốc kế để xác định xem người dùng có lắc thiết bị hay không
                 @Override
                 public void onSensorChanged(SensorEvent event) {
@@ -172,38 +160,60 @@ public class MainActivityFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.undo:
                 doodleView.onClickUndo();
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
             case R.id.redo:
                 doodleView.onClickRedo();
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
+            case R.id.pen:
+                doodleView.setPaint("pen");
+                return true; // consume the menu event
+
             case R.id.eraser:
+                // mo dialog chon kich thuoc tẩy
                 showEraserSizeChooserDialog();
-                return true; // consume the menu event
+                return true;
+
             case R.id.color:
                 ColorDialogFragment colorDialog = new ColorDialogFragment();
                 colorDialog.show(getFragmentManager(), "color dialog");
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
             case R.id.line_width:
-                LineWidthDialogFragment widthDialog =
-                        new LineWidthDialogFragment();
+                LineWidthDialogFragment widthDialog = new LineWidthDialogFragment();
                 widthDialog.show(getFragmentManager(), "line width dialog");
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
             case R.id.chose_image:
                 choseImage();
                 doodleView.setEraser(false);
                 return true; // consume the menu event
+
             case R.id.delete_drawing:
                 confirmErase(); // confirm before erasing image
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
             case R.id.save:
                 saveImage(); // check permission and save current image
-                doodleView.setEraser(false);
                 return true; // consume the menu event
+
+            case R.id.paint_line:
+                doodleView.setPaint("line");
+                return true; // consume the menu event
+
+            case R.id.paint_rect:
+                doodleView.setPaint("rect");
+                return true; // consume the menu event
+
+            case R.id.paint_circle:
+                doodleView.setPaint("circle");
+                return true; // consume the menu event
+
+            case R.id.paint_oval:
+                doodleView.setPaint("oval");
+                return true; // consume the menu event
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -252,25 +262,6 @@ public class MainActivityFragment extends Fragment {
         startActivityForResult(customChooserIntent, 10);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 10 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
-            Uri uri = data.getData();
-
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                Log.d("AAA", String.valueOf(bitmap));
-
-//                ImageView imageView = (ImageView) findViewById(R.id.imageView);
-//                imageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // requests for the permission needed for saving the image if
     // necessary or saves the image if the app already has permission
     @SuppressLint("NewApi")
@@ -313,8 +304,12 @@ public class MainActivityFragment extends Fragment {
                         SAVE_IMAGE_PERMISSION_REQUEST_CODE);
             }
         }
-        else { // if app already has permission to write to external storage
-            doodleView.saveImage(); // save the image
+        else {
+            // if app already has permission to write to external storage
+//            doodleView.saveImage(); // save the image
+
+            doodleView.saveImage(loadBitmapFromView(doodleView));
+
         }
     }
 
@@ -326,10 +321,38 @@ public class MainActivityFragment extends Fragment {
         // requested permission
         switch (requestCode) {
             case SAVE_IMAGE_PERMISSION_REQUEST_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    doodleView.saveImage(); // save the image
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                    doodleView.saveImage(); // save the image
+                    doodleView.saveImage(loadBitmapFromView(doodleView));
+                }
                 return;
         }
+    }
+
+    public static Bitmap loadBitmapFromView(View view) {
+
+        // width measure spec
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(
+                view.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+        // height measure spec
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(
+                view.getMeasuredHeight(), View.MeasureSpec.AT_MOST);
+        // measure the view
+        view.measure(widthSpec, heightSpec);
+        // set the layout sizes
+        view.layout(view.getLeft(), view.getTop(),
+                view.getMeasuredWidth() + view.getLeft(),
+                view.getMeasuredHeight() + view.getTop());
+        // create the bitmap
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        // create a canvas used to get the view's image and draw it on the bitmap
+        Canvas c = new Canvas(bitmap);
+        // position the image inside the canvas
+        c.translate(-view.getScrollX(), -view.getScrollY());
+        // get the canvas
+        view.draw(c);
+
+        return bitmap;
     }
 
     // returns the DoodleView

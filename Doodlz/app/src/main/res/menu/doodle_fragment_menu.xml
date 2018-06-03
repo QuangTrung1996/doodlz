@@ -15,6 +15,14 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_redo_24dp">
     </item>
+
+    <item
+        android:title="@string/menuitem_pen"
+        android:id="@+id/pen"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_eraser">
+    </item>
+
     <item
         android:title="@string/menuitem_eraser"
         android:id="@+id/eraser"
@@ -52,6 +60,33 @@
         android:icon="@drawable/ic_save_24dp">
     </item>
 
+    <item
+        android:title="@string/menuitem_line"
+        android:id="@+id/paint_line"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save_24dp">
+    </item>
+
+    <item
+        android:title="@string/menuitem_rect"
+        android:id="@+id/paint_rect"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save_24dp">
+    </item>
+
+    <item
+        android:title="@string/menuitem_circle"
+        android:id="@+id/paint_circle"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save_24dp">
+    </item>
+
+    <item
+        android:title="@string/menuitem_oval"
+        android:id="@+id/paint_oval"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save_24dp">
+    </item>
 
 
 </menu>

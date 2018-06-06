@@ -9,13 +9,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,11 +28,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MainActivityFragment extends Fragment {
+import java.io.IOException;
+import java.io.InputStream;
 
-    Context applicationContext = MainActivity.getContextOfApplication();
+import static android.app.Activity.RESULT_OK;
+
+public class MainActivityFragment extends Fragment {
 
     private int smallBrush, mediumBrush, largeBrush;
 
@@ -156,67 +164,142 @@ public class MainActivityFragment extends Fragment {
     // handle choice from options menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         // switch based on the MenuItem id
         switch (item.getItemId()) {
             case R.id.undo:
                 doodleView.onClickUndo();
-                return true; // consume the menu event
+                return true;
 
             case R.id.redo:
                 doodleView.onClickRedo();
-                return true; // consume the menu event
+                return true;
 
             case R.id.pen:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 doodleView.setPaint("pen");
-                return true; // consume the menu event
+                doodleView.setEraser(false);
+                return true;
 
             case R.id.eraser:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 // mo dialog chon kich thuoc tẩy
+                doodleView.setPaint("pen");
                 showEraserSizeChooserDialog();
                 return true;
 
             case R.id.color:
                 ColorDialogFragment colorDialog = new ColorDialogFragment();
                 colorDialog.show(getFragmentManager(), "color dialog");
-                return true; // consume the menu event
+
+                doodleView.setBackgroundColor(false);
+                return true;
 
             case R.id.line_width:
                 LineWidthDialogFragment widthDialog = new LineWidthDialogFragment();
                 widthDialog.show(getFragmentManager(), "line width dialog");
-                return true; // consume the menu event
+                return true;
 
             case R.id.chose_image:
                 choseImage();
                 doodleView.setEraser(false);
-                return true; // consume the menu event
+
+                return true;
 
             case R.id.delete_drawing:
                 confirmErase(); // confirm before erasing image
-                return true; // consume the menu event
+                return true;
 
             case R.id.save:
                 saveImage(); // check permission and save current image
-                return true; // consume the menu event
+                return true;
+
+            case R.id.menu2:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
+                doodleView.setPaint("line");
+                doodleView.setEraser(false);
+
+                return true;
 
             case R.id.paint_line:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 doodleView.setPaint("line");
-                return true; // consume the menu event
+                return true;
 
             case R.id.paint_rect:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 doodleView.setPaint("rect");
-                return true; // consume the menu event
+                return true;
 
             case R.id.paint_circle:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 doodleView.setPaint("circle");
-                return true; // consume the menu event
+                return true;
 
             case R.id.paint_oval:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
                 doodleView.setPaint("oval");
-                return true; // consume the menu event
+                return true;
+
+            case R.id.paint_square:
+
+                if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+
+                doodleView.setPaint("square");
+                return true;
+
+            case R.id.chose_background_color:
+                ColorDialogFragment colorDialog2 = new ColorDialogFragment();
+                colorDialog2.show(getFragmentManager(), "color dialog");
+
+                doodleView.setBackgroundColor(true);
+                return true;
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void choseImage() {
+
     }
 
     private void showEraserSizeChooserDialog(){
@@ -251,15 +334,6 @@ public class MainActivityFragment extends Fragment {
             }
         });
         brushDialog.show();
-    }
-
-    private void choseImage() {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-
-        Intent customChooserIntent = Intent.createChooser(i, "Pick an image");
-        startActivityForResult(customChooserIntent, 10);
     }
 
     // requests for the permission needed for saving the image if
@@ -305,11 +379,34 @@ public class MainActivityFragment extends Fragment {
             }
         }
         else {
-            // if app already has permission to write to external storage
-//            doodleView.saveImage(); // save the image
 
-            doodleView.saveImage(loadBitmapFromView(doodleView));
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+            // set Alert Dialog's message
+            builder.setMessage("Bạn có muốn lưu hinh ?");
+
+            // add an OK button to the dialog
+            builder.setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            doodleView.saveImage(loadBitmapFromView(doodleView));
+                        }
+                    }
+            );
+
+            // add an cancel button to the dialog
+            builder.setNegativeButton(android.R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }
+            );
+
+            // display the dialog
+            builder.create().show();
         }
     }
 
@@ -364,4 +461,6 @@ public class MainActivityFragment extends Fragment {
     public void setDialogOnScreen(boolean visible) {
         dialogOnScreen = visible;
     }
+
+
 }

@@ -5,6 +5,7 @@ import android.graphics.Path;
 class CustomPath extends Path {
     private int color;
     private float brushThickness;
+    private boolean erase;
 
     public float getBrushThickness() {
         return brushThickness;

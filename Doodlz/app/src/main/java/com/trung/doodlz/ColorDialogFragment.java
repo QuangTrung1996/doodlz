@@ -72,8 +72,6 @@ public class ColorDialogFragment extends DialogFragment{
     }
 
     // tell MainActivityFragment that dialog is now displayed
-
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -84,9 +82,8 @@ public class ColorDialogFragment extends DialogFragment{
         }
 
     }
+
     // tell MainActivityFragment that dialog is no longer displayed
-
-
     @Override
     public void onDetach() {
         super.onDetach();

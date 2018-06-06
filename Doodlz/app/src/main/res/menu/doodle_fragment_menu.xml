@@ -3,12 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--hoan tac-->
     <item
         android:title="@string/menuitem_undo"
         android:id="@+id/undo"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_undo_24dp">
     </item>
+
+    <!--huy hoan tac-->
     <item
         android:title="@string/menuitem_redo"
         android:id="@+id/redo"
@@ -16,77 +19,105 @@
         android:icon="@drawable/ic_redo_24dp">
     </item>
 
-    <item
-        android:title="@string/menuitem_pen"
-        android:id="@+id/pen"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_eraser">
-    </item>
-
-    <item
-        android:title="@string/menuitem_eraser"
-        android:id="@+id/eraser"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_eraser">
-    </item>
+    <!--mau sac-->
     <item
         android:title="@string/menuitem_color"
         android:id="@+id/color"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_palette_24dp">
     </item>
+
+    <!--Độ dày bút-->
     <item
         android:title="@string/menuitem_line_width"
         android:id="@+id/line_width"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_brush_24dp">
     </item>
+
+    <!--chon hinh nen-->
     <item
         android:title="@string/menuitem_image"
         android:id="@+id/chose_image"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_image_24dp">
+        android:icon="@drawable/ic_image_24dp"
+        android:visible="false">
     </item>
+
+    <!--chon mau nen-->
+    <item
+        android:title="@string/menuitem_background_color"
+        android:id="@+id/chose_background_color"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <group android:checkableBehavior="single">
+
+        <!--but ve-->
+        <item
+            android:title="@string/menuitem_pen"
+            android:id="@+id/pen"
+            android:checked="true">
+        </item>
+
+        <!--cuc tay-->
+        <item
+            android:title="@string/menuitem_eraser"
+            android:id="@+id/eraser"
+            android:icon="@drawable/ic_eraser">
+        </item>
+
+        <item android:id="@+id/menu2"
+            android:title="Vẽ hình">
+            <menu >
+                <group android:id="@+id/group2" android:checkableBehavior="single">
+
+                <!--duong thang-->
+                <item
+                    android:title="@string/menuitem_line"
+                    android:id="@+id/paint_line"
+                    android:checked="true">
+                </item>
+
+                <!--hinh chu nhat-->
+                <item
+                    android:title="@string/menuitem_rect"
+                    android:id="@+id/paint_rect">
+                </item>
+
+                <!--hinh vuong-->
+                <item
+                    android:title="@string/menuitem_square"
+                    android:id="@+id/paint_square">
+                </item>
+
+                <!--hinh tron-->
+                <item
+                    android:title="@string/menuitem_circle"
+                    android:id="@+id/paint_circle">
+                </item>
+
+                <!--hinh oval-->
+                <item
+                    android:title="@string/menuitem_oval"
+                    android:id="@+id/paint_oval">
+                </item>
+
+                </group>
+            </menu>
+        </item>
+
+    </group>
+
+    <!--xoa-->
     <item
         android:title="@string/menuitem_delete"
         android:id="@+id/delete_drawing"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_delete_24dp">
     </item>
+
+    <!--luu-->
     <item
         android:title="@string/menuitem_save"
         android:id="@+id/save"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_save_24dp">
     </item>
-
-    <item
-        android:title="@string/menuitem_line"
-        android:id="@+id/paint_line"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_save_24dp">
-    </item>
-
-    <item
-        android:title="@string/menuitem_rect"
-        android:id="@+id/paint_rect"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_save_24dp">
-    </item>
-
-    <item
-        android:title="@string/menuitem_circle"
-        android:id="@+id/paint_circle"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_save_24dp">
-    </item>
-
-    <item
-        android:title="@string/menuitem_oval"
-        android:id="@+id/paint_oval"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_save_24dp">
-    </item>
-
 
 </menu>

@@ -9,12 +9,14 @@
     <string name="menuitem_line">Đường thẳng</string>
     <string name="menuitem_rect">Hình chữ nhật</string>
     <string name="menuitem_circle">Hình tròn</string>
+    <string name="menuitem_square">Hình vuông</string>
     <string name="menuitem_oval">Hình Oval</string>
-    <string name="menuitem_undo">Undo</string>
-    <string name="menuitem_redo">Redo</string>
+    <string name="menuitem_undo">Hoàn tác</string>
+    <string name="menuitem_redo">Hủy hoàn tác</string>
     <string name="menuitem_pen">Bút vẽ</string>
-    <string name="menuitem_eraser">Tẩy</string>
-    <string name="menuitem_image">Chọn hình</string>
+    <string name="menuitem_eraser">Cục tẩy</string>
+    <string name="menuitem_image">Chọn hình nền</string>
+    <string name="menuitem_background_color">Chọn màu nền</string>
 
     <!--color-->
     <string name="label_alpha">Alpha</string>
@@ -38,7 +40,7 @@
     <string name="message_erase">Erase the drawing?</string>
 
     <!--EraseImageDialogFragment.java-->
-    <string name="permission_explanation">To save an image, the app requires permission to write to  external storage</string>
+    <string name="permission_explanation">Để lưu hình ảnh, ứng dụng yêu cầu quyền ghi vào bộ nhớ ngoài</string>
 
     <!--dialog_brush_size-->
     <string name="small">Small</string>
